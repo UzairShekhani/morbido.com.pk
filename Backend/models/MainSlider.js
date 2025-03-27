@@ -1,10 +1,9 @@
 const mongoose = require('mongoose');
 
 const mainSliderSchema = new mongoose.Schema({
-  title: String,
-  subtitle: String,
+  heading: String,
+  paragraph: String,
   image: String,
-  url: String,
 });
 
 module.exports = mongoose.model("MainSlider", mainSliderSchema);

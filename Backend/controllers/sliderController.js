@@ -34,25 +34,20 @@ exports.getCircleSliders = async (req, res) => {
   res.json(sliders);
 };
 
-exports.createCircleSlider = async (req, res) => {
-    const { flavor, price } = req.body;
+exports.createMainSlider = async (req, res) => {
+    const { heading, paragraph } = req.body;
+    const image = req.file ? req.file.filename : "";
   
-    if (!flavor || !price || !req.file) {
-      return res.status(400).json({ message: "Missing flavor, price, or image!" });
-    }
+    const newSlide = new MainSlider({
+      heading,
+      paragraph,
+      image,
+    });
   
-    const image = req.file.filename;
-  
-    // Check duplicate flavor (optional, for no-repeat)
-    const existing = await CircleSlider.findOne({ flavor });
-    if (existing) {
-      return res.status(409).json({ message: "This flavor already exists!" });
-    }
-  
-    const newSlide = new CircleSlider({ flavor, image, price });
     await newSlide.save();
     res.json(newSlide);
   };
+  
   
 
 exports.deleteCircleSlider = async (req, res) => {
