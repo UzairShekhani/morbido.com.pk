@@ -1,3 +1,4 @@
+// ✅ sliderController.js
 const MainSlider = require("../models/MainSlider");
 const CircleSlider = require("../models/CircleSlider");
 const fs = require("fs");
@@ -10,13 +11,12 @@ exports.getMainSliders = async (req, res) => {
 };
 
 exports.createMainSlider = async (req, res) => {
-    const { title, subtitle, url } = req.body;
-    const image = req.file ? req.file.filename : "";
-    const newSlide = new MainSlider({ title, subtitle, image, url });
-    await newSlide.save();
-    res.json(newSlide);
-  };
-  
+  const { heading, paragraph } = req.body;
+  const image = req.file ? req.file.filename : "";
+  const newSlide = new MainSlider({ heading, paragraph, image });
+  await newSlide.save();
+  res.json(newSlide);
+};
 
 exports.deleteMainSlider = async (req, res) => {
   const slide = await MainSlider.findById(req.params.id);
@@ -34,22 +34,13 @@ exports.getCircleSliders = async (req, res) => {
   res.json(sliders);
 };
 
-exports.createMainSlider = async (req, res) => {
-    const { heading, paragraph } = req.body;
-    const image = req.file ? req.file.filename : "";
-  
-    const newSlide = new MainSlider({
-      heading,
-      paragraph,
-      image,
-    });
-  
-    await newSlide.save();
-    res.json(newSlide);
-  };
-      
-  
-  
+exports.createCircleSlider = async (req, res) => {
+  const { flavor, price } = req.body;
+  const image = req.file ? req.file.filename : "";
+  const newSlide = new CircleSlider({ flavor, price, image });
+  await newSlide.save();
+  res.json(newSlide);
+};
 
 exports.deleteCircleSlider = async (req, res) => {
   const slide = await CircleSlider.findById(req.params.id);
