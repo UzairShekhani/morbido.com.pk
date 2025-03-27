@@ -47,6 +47,7 @@ exports.createMainSlider = async (req, res) => {
     await newSlide.save();
     res.json(newSlide);
   };
+      
   
   
 

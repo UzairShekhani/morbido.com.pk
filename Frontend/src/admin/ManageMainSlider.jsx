@@ -1,4 +1,3 @@
-// src/admin/ManageMainSlider.jsx
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -52,61 +51,73 @@ const ManageMainSlider = () => {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h2> Manage Main Sliders</h2>
+    <div style={{ padding: '20px', maxWidth: '600px', margin: 'auto', fontFamily: 'Arial, sans-serif' }}>
+      <h2 style={{ textAlign: 'center', color: '#333' }}>Manage Main Sliders</h2>
 
-      <form onSubmit={handleSubmit} style={{ marginBottom: '20px' }}>
+      <form 
+        onSubmit={handleSubmit} 
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '10px',
+          padding: '20px',
+          border: '1px solid #ddd',
+          borderRadius: '10px',
+          backgroundColor: '#f9f9f9',
+        }}
+      >
         <input
           type="text"
           placeholder="Title"
           value={form.title}
-          onChange={(e) =>
-            setForm({ ...form, title: e.target.value })
-          }
+          onChange={(e) => setForm({ ...form, title: e.target.value })}
           required
+          style={{ padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
         />
         <input
           type="text"
           placeholder="Subtitle"
           value={form.subtitle}
-          onChange={(e) =>
-            setForm({ ...form, subtitle: e.target.value })
-          }
+          onChange={(e) => setForm({ ...form, subtitle: e.target.value })}
           required
+          style={{ padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
         />
         <input
           type="file"
           accept="image/*"
-          onChange={(e) =>
-            setForm({ ...form, image: e.target.files[0] })
-          }
+          onChange={(e) => setForm({ ...form, image: e.target.files[0] })}
           required
+          style={{ padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
         />
-        <button type="submit">Add Slide</button>
+        <button type="submit" style={{ padding: '10px', borderRadius: '5px', border: 'none', backgroundColor: '#28a745', color: 'white', cursor: 'pointer' }}>Add Slide</button>
       </form>
 
       {slides.length > 0 ? (
-        <ul>
+        <ul style={{ listStyle: 'none', padding: 0, marginTop: '20px' }}>
           {slides.map((s) => (
-            <li key={s._id} style={{ marginBottom: '10px' }}>
-              <b>{s.heading}</b> - {s.paragraph}
+            <li key={s._id} style={{ padding: '15px', border: '1px solid #ddd', borderRadius: '10px', marginBottom: '10px', backgroundColor: '#fff' }}>
+              <b style={{ color: '#333' }}>{s.heading}</b> - {s.paragraph}
               <br />
               {s.image && (
                 <img
                   src={`http://localhost:5000/uploads/${s.image}`}
                   height={80}
                   alt={s.heading}
+                  style={{ display: 'block', marginTop: '10px', borderRadius: '5px' }}
                 />
               )}
               <br />
-              <button onClick={() => handleDelete(s._id)}>
+              <button 
+                onClick={() => handleDelete(s._id)}
+                style={{ padding: '10px', borderRadius: '5px', border: 'none', backgroundColor: '#dc3545', color: 'white', cursor: 'pointer', marginTop: '10px' }}
+              >
                 Delete
               </button>
             </li>
           ))}
         </ul>
       ) : (
-        <p>No slides found.</p>
+        <p style={{ textAlign: 'center', color: '#777' }}>No slides found.</p>
       )}
     </div>
   );
