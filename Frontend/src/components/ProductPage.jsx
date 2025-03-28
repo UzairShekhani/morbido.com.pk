@@ -1,9 +1,19 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
 import BannerSection from "./BannerSection";
-import { useEffect } from "react";
 
 const ProductPage = () => {
+  const [product, setProduct] = useState(null);
+
   useEffect(() => {
-    updateProgress(70); // Example value
+    axios.get("http://localhost:5000/api/products")
+      .then(res => {
+        if (res.data.length > 0) {
+          setProduct(res.data[0]);
+          updateProgress(res.data[0].quantity || 0);
+        }
+      })
+      .catch(err => console.error("Product Fetch Error:", err));
   }, []);
 
   const updateProgress = (quantity) => {
@@ -18,38 +28,33 @@ const ProductPage = () => {
     }
   };
 
-  const flavorOptions = ["Chocolate", "Vanilla", "Strawberry", "Mango"];
-  const sizeOptions = ["Small", "Medium", "Large"];
-
   const optionStyle = {
-    padding: "8px 14px",
+    padding: "10px 16px",
     background: "#fff",
-    border: "1px solid #ddd",
+    border: "1px solid #ccc",
     borderRadius: "25px",
     cursor: "pointer",
-    transition: "all 0.3s",
-    fontSize: "14px",
+    fontSize: "15px",
+    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
+    transition: "all 0.3s ease",
   };
 
   const buttonBase = {
-    padding: "12px 20px",
+    padding: "14px 24px",
     borderRadius: "10px",
     border: "none",
     cursor: "pointer",
     fontWeight: "600",
+    fontSize: "16px",
     transition: "all 0.3s ease",
   };
 
+  if (!product) return <p style={{ textAlign: "center", marginTop: "150px" }}>Loading product...</p>;
+
   return (
-    <>
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    
+    <div style={{ paddingTop: "120px" }}>
       <BannerSection />
+
       <div
         style={{
           maxWidth: "1200px",
@@ -57,19 +62,19 @@ const ProductPage = () => {
           display: "flex",
           flexWrap: "wrap",
           padding: "0 20px",
-          gap: "30px",
+          gap: "40px",
           fontFamily: "'Segoe UI', sans-serif",
         }}
       >
         {/* Image */}
         <div style={{ flex: "1 1 45%", textAlign: "center" }}>
           <img
-            src="/images/11.jpg"
-            alt="Ice Cream"
+            src={`http://localhost:5000/uploads/${product.image}`}
+            alt={product.name}
             style={{
               width: "100%",
-              borderRadius: "20px",
-              boxShadow: "0 10px 25px rgba(0,0,0,0.05)",
+              borderRadius: "25px",
+              boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
               transition: "transform 0.4s",
             }}
             onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
@@ -81,58 +86,34 @@ const ProductPage = () => {
         <div style={{ flex: "1 1 50%" }}>
           <h2
             style={{
-              fontSize: "30px",
+              fontSize: "34px",
               color: "#222",
-              marginBottom: "5px",
-              fontWeight: 700,
+              marginBottom: "10px",
+              fontWeight: 800,
             }}
           >
-            🍧 Delicious Ice Cream
+            {product.name}
           </h2>
-          <p style={{ fontSize: "22px", fontWeight: "600", color: "#f37272" }}>Rs. 299</p>
+          <p style={{ fontSize: "24px", fontWeight: "600", color: "#ff6b6b" }}>
+            Rs. {product.price}
+          </p>
 
           {/* Flavors */}
-          <div style={{ marginTop: "20px" }}>
-            <strong>Flavors:</strong>
-            <div style={{ marginTop: "10px", display: "flex", gap: "10px", flexWrap: "wrap" }}>
-              {flavorOptions.map((f, i) => (
-                <span
-                  key={i}
-                  style={optionStyle}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = "#fef4ef")}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = "#fff")}
-                >
-                  {f}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* Sizes */}
-          <div style={{ marginTop: "20px" }}>
-            <strong>Sizes:</strong>
-            <div style={{ marginTop: "10px", display: "flex", gap: "10px", flexWrap: "wrap" }}>
-              {sizeOptions.map((s, i) => (
-                <span
-                  key={i}
-                  style={optionStyle}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = "#f0f0f0")}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = "#fff")}
-                >
-                  {s}
-                </span>
-              ))}
+          <div style={{ marginTop: "24px" }}>
+            <strong>Category:</strong>
+            <div style={{ marginTop: "10px" }}>
+              <span style={optionStyle}>{product.category}</span>
             </div>
           </div>
 
           {/* Quantity */}
-          <div style={{ marginTop: "30px" }}>
+          <div style={{ marginTop: "35px" }}>
             <label style={{ fontWeight: 500 }}>Available Quantity:</label>
             <div
               style={{
-                height: "20px",
+                height: "24px",
                 background: "#eee",
-                borderRadius: "10px",
+                borderRadius: "12px",
                 marginTop: "10px",
                 position: "relative",
                 overflow: "hidden",
@@ -143,8 +124,8 @@ const ProductPage = () => {
                 style={{
                   height: "100%",
                   width: "0%",
-                  backgroundColor: "#86d19c",
-                  transition: "width 0.5s ease",
+                  backgroundColor: "#28c76f",
+                  transition: "width 0.6s ease",
                 }}
               ></div>
               <span
@@ -154,8 +135,8 @@ const ProductPage = () => {
                   left: "50%",
                   top: "50%",
                   transform: "translate(-50%, -50%)",
-                  color: "#444",
-                  fontSize: "12px",
+                  color: "#333",
+                  fontSize: "13px",
                   fontWeight: 600,
                 }}
               >
@@ -165,13 +146,13 @@ const ProductPage = () => {
           </div>
 
           {/* Buttons */}
-          <div style={{ marginTop: "30px", display: "flex", gap: "15px" }}>
+          <div style={{ marginTop: "35px", display: "flex", gap: "18px" }}>
             <button
               style={{
                 ...buttonBase,
                 backgroundColor: "#ffc107",
                 color: "#fff",
-                boxShadow: "0 4px 10px rgba(255,193,7,0.2)",
+                boxShadow: "0 5px 15px rgba(255,193,7,0.3)",
               }}
               onMouseOver={(e) => (e.currentTarget.style.opacity = 0.9)}
               onMouseOut={(e) => (e.currentTarget.style.opacity = 1)}
@@ -183,7 +164,7 @@ const ProductPage = () => {
                 ...buttonBase,
                 backgroundColor: "#17a2b8",
                 color: "#fff",
-                boxShadow: "0 4px 10px rgba(23,162,184,0.2)",
+                boxShadow: "0 5px 15px rgba(23,162,184,0.3)",
               }}
               onMouseOver={(e) => (e.currentTarget.style.opacity = 0.9)}
               onMouseOut={(e) => (e.currentTarget.style.opacity = 1)}
@@ -193,7 +174,7 @@ const ProductPage = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

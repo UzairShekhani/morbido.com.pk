@@ -3,6 +3,7 @@ import BannerAdmin from './BannerAdmin';
 import FlavorAdmin from './FlavorAdmin';
 import ManageMainSlider from './ManageMainSlider';
 import ManageCircleSlider from './ManageCircleSlider';
+import ProductAdmin from './ProductAdmin'; // ✅ Import ProductAdmin
 import "../admin/admin.css";
 
 const AdminPanel = () => {
@@ -13,7 +14,8 @@ const AdminPanel = () => {
         <Link to="/admin/banners">Banners</Link><br />
         <Link to="/admin/flavors">Flavors</Link><br />
         <Link to="/admin/main-slider">Main Slider</Link><br />
-        <Link to="/admin/circle-slider">Circle Slider</Link>
+        <Link to="/admin/circle-slider">Circle Slider</Link><br />
+        <Link to="/admin/products">Products</Link> {/* ✅ Add Product Link */}
       </div>
 
       <div style={{ flex: 1, padding: '20px' }}>
@@ -22,6 +24,7 @@ const AdminPanel = () => {
           <Route path="flavors" element={<FlavorAdmin />} />
           <Route path="main-slider" element={<ManageMainSlider />} />
           <Route path="circle-slider" element={<ManageCircleSlider />} />
+          <Route path="products" element={<ProductAdmin />} /> {/* ✅ Route Added */}
           <Route index element={<h2>Select a section</h2>} />
         </Routes>
       </div>

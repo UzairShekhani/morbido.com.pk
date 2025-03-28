@@ -1,4 +1,3 @@
-// ✅ src/App.jsx
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
@@ -14,15 +13,16 @@ function App() {
   return (
     <Router>
       <Routes>
+        {/* Admin Login Route */}
         <Route path="/login" element={<Login />} />
 
+        {/* Protected Admin Panel Route */}
         <Route
           path="/admin/*"
-          element={
-            token ? <AdminPanel /> : <Navigate to="/login" replace />
-          }
+          element={token ? <AdminPanel /> : <Navigate to="/login" replace />}
         />
 
+        {/* Public Routes */}
         <Route
           path="*"
           element={
@@ -38,6 +38,7 @@ function App() {
   );
 }
 
+// ✅ Public Routes
 const MainRoutes = () => (
   <Routes>
     <Route path="/" element={<SliderMain />} />
