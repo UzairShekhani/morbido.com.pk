@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import IceCreamCard from "./IceCreamCard";
 import "./IceCreamGrid.css"; // optional styling
+import BannerSection from "./BannerSection";
 
 const IceCreamGrid = () => {
   const [flavors, setFlavors] = useState([]);
@@ -13,6 +14,8 @@ const IceCreamGrid = () => {
   }, []);
 
   return (
+    <>
+    <BannerSection/>
     <div className="icecream-grid">
       {flavors.map((item) => (
         <IceCreamCard
@@ -24,6 +27,7 @@ const IceCreamGrid = () => {
         />
       ))}
     </div>
+    </>
   );
 };
 

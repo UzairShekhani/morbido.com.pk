@@ -9,6 +9,7 @@ const {
   getCircleSliders,
   createCircleSlider,
   deleteCircleSlider,
+  updateMainSlider
 } = require("../controllers/sliderController");
 
 const storage = multer.diskStorage({
@@ -21,10 +22,14 @@ const upload = multer({ storage });
 router.get("/main", getMainSliders);
 router.post("/main", upload.single("image"), createMainSlider);
 router.delete("/main/:id", deleteMainSlider);
+router.put("/main/:id", upload.single("image"), updateMainSlider);
+
+
 
 // Circle Sliders
 router.get("/circle", getCircleSliders);
 router.post("/circle", upload.single("image"), createCircleSlider);
 router.delete("/circle/:id", deleteCircleSlider);
+
 
 module.exports = router;

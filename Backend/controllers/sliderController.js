@@ -28,6 +28,33 @@ exports.deleteMainSlider = async (req, res) => {
   res.json({ message: "Main Slider Deleted" });
 };
 
+// ✅ Update existing main slider
+exports.updateMainSlider = async (req, res) => {
+  const { heading, paragraph, bgColor } = req.body;
+
+  try {
+    const slider = await MainSlider.findById(req.params.id);
+    if (!slider) return res.status(404).json({ error: "Slide not found" });
+
+    slider.heading = heading;
+    slider.paragraph = paragraph;
+    slider.bgColor = bgColor;
+
+    if (req.file) {
+      // Delete old image
+      const oldPath = path.join(__dirname, "..", "uploads", slider.image);
+      if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+      slider.image = req.file.filename;
+    }
+
+    const updated = await slider.save();
+    res.json(updated);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to update slide" });
+  }
+};
+
+
 // ========== CIRCLE SLIDER ==========
 exports.getCircleSliders = async (req, res) => {
   const sliders = await CircleSlider.find();

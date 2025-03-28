@@ -74,12 +74,12 @@ const SliderMain = () => {
         </div>
 
         <div id="backgrounds">
-          {slides.map((slide, i) => (
+          {slides.map((s, i) => (
             <div
               key={i}
               className="background"
               style={{
-                background: slide.bgColor || "radial-gradient(#F9F9EF, #ccc)",
+                background: s.bgColor || "#F9F9EF",
                 opacity: index === i ? 1 : 0,
               }}
             ></div>
