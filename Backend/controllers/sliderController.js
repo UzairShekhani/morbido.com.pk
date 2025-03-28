@@ -11,9 +11,9 @@ exports.getMainSliders = async (req, res) => {
 };
 
 exports.createMainSlider = async (req, res) => {
-  const { heading, paragraph } = req.body;
+  const { heading, paragraph, bgColor } = req.body;
   const image = req.file ? req.file.filename : "";
-  const newSlide = new MainSlider({ heading, paragraph, image });
+  const newSlide = new MainSlider({ heading, paragraph, bgColor, image });
   await newSlide.save();
   res.json(newSlide);
 };

@@ -9,7 +9,6 @@ const SliderMain = () => {
   const [index, setIndex] = useState(0);
   const navigate = useNavigate();
 
-  // Fetch from DB
   useEffect(() => {
     axios
       .get("http://localhost:5000/api/sliders/main")
@@ -17,7 +16,6 @@ const SliderMain = () => {
       .catch((err) => console.error("SliderMain fetch error:", err));
   }, []);
 
-  // Auto slide change every 7 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setIndex((prevIndex) => (prevIndex + 1) % slides.length);
@@ -25,7 +23,6 @@ const SliderMain = () => {
     return () => clearInterval(interval);
   }, [slides]);
 
-  // Page entry animation
   useEffect(() => {
     gsap.fromTo(
       ".page-wrapper",
@@ -34,7 +31,6 @@ const SliderMain = () => {
     );
   }, []);
 
-  // On image click navigate with exit animation
   const handleClick = (url) => {
     gsap.to(".page-wrapper", {
       duration: 1,
@@ -53,8 +49,12 @@ const SliderMain = () => {
 
           <div className="slider-content-wrap">
             <div className="slider-content">
-              <h2 className="heading-style-2">{slides[index]?.heading}</h2>
-              <p>{slides[index]?.paragraph}</p>
+              <h2 className="heading-style-2 fade-in">
+                {slides[index]?.heading || "No Title"}
+              </h2>
+              <p className="fade-in">
+                {slides[index]?.paragraph || "No Description"}
+              </p>
             </div>
           </div>
         </div>
@@ -63,22 +63,23 @@ const SliderMain = () => {
           {slides.map((item, idx) => (
             <img
               key={idx}
-              className={`slider-image ${index === idx ? "active" : ""}`}
+              className={`slider-image ${
+                index === idx ? "active" : "inactive"
+              }`}
               src={`http://localhost:5000/uploads/${item.image}`}
-              alt={item.heading}
-              onClick={() => handleClick(item.url)}
+              alt={item.heading || `Slide ${idx + 1}`}
+              onClick={() => handleClick(item.url || "/")}
             />
           ))}
         </div>
 
         <div id="backgrounds">
-          {slides.map((_, i) => (
+          {slides.map((slide, i) => (
             <div
               key={i}
               className="background"
               style={{
-                background:
-                  "radial-gradient(50% 50% at 50% 50%, #F9F9EF 0%, #ccc 100%)",
+                background: slide.bgColor || "radial-gradient(#F9F9EF, #ccc)",
                 opacity: index === i ? 1 : 0,
               }}
             ></div>

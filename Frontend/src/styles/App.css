@@ -204,7 +204,7 @@ p {
   max-width: 593px;
   max-height: 779px;
   height: 100%;
-  min-height: 320px;
+  min-height: 654px;
 }
 
 /* ========================= media query ============================== */
@@ -269,7 +269,7 @@ p {
   }
   .slider-main {
     flex-direction: column;
-    min-height: 900px;
+    min-height: 595px;
   }
   .social-icons a {
     width: 35px;
@@ -325,7 +325,7 @@ p {
     height: 15px;
   }
   .container {
-    padding: 50px 20px 50px 20px;
+    padding: 112px 20px 50px 20px;
     max-width: 100%;
   }
   .slider-images > img {
