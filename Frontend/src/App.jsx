@@ -6,6 +6,7 @@ import CircleSlider from './components/CircleSlider';
 import ProductPage from './components/ProductPage';
 import AdminPanel from './admin/AdminPanel';
 import Login from './admin/Login';
+import AllProducts from "./components/AllProducts"; // ⬅️ Add this at the top
 
 function App() {
   const token = localStorage.getItem("token");
@@ -48,6 +49,8 @@ const MainRoutes = () => (
     <Route path="/popsicle" element={<CircleSlider title="Popsicles" />} />
     <Route path="/premium" element={<CircleSlider title="Premiums" />} />
     <Route path="/icecreamproducts" element={<ProductPage />} />
+    <Route path="/all-products" element={<AllProducts />} />
+
   </Routes>
 );
 

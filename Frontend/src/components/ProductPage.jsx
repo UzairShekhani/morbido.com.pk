@@ -1,6 +1,6 @@
+import BannerSection from "./BannerSection";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import BannerSection from "./BannerSection";
 
 const ProductPage = () => {
   const [product, setProduct] = useState(null);
@@ -37,6 +37,8 @@ const ProductPage = () => {
     fontSize: "15px",
     boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
     transition: "all 0.3s ease",
+    display: "inline-block",
+    margin: "5px 0"
   };
 
   const buttonBase = {
@@ -47,6 +49,7 @@ const ProductPage = () => {
     fontWeight: "600",
     fontSize: "16px",
     transition: "all 0.3s ease",
+    minWidth: "120px"
   };
 
   if (!product) return <p style={{ textAlign: "center", marginTop: "150px" }}>Loading product...</p>;
@@ -67,12 +70,12 @@ const ProductPage = () => {
         }}
       >
         {/* Image */}
-        <div style={{ flex: "1 1 45%", textAlign: "center" }}>
+        <div style={{ flex: "1 1 45%", textAlign: "center", animation: "fadeIn 1s ease" }}>
           <img
             src={`http://localhost:5000/uploads/${product.image}`}
             alt={product.name}
             style={{
-              width: "100%",
+              width: "55%",
               borderRadius: "25px",
               boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
               transition: "transform 0.4s",
@@ -83,7 +86,7 @@ const ProductPage = () => {
         </div>
 
         {/* Details */}
-        <div style={{ flex: "1 1 50%" }}>
+        <div style={{ flex: "1 1 50%", animation: "slideUp 1s ease" }}>
           <h2
             style={{
               fontSize: "34px",
@@ -174,6 +177,19 @@ const ProductPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Animation Styles */}
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+          from { transform: translateY(20px); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
+        }
+      `}</style>
     </div>
   );
 };
