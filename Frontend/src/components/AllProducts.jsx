@@ -17,9 +17,10 @@ const AllProducts = () => {
       <BannerSection />
 
       <div style={{ maxWidth: "1200px", margin: "40px auto", padding: "0 20px" }}>
-        <h2 style={{ fontSize: "32px", fontWeight: "bold", marginBottom: "20px", color: "#333" }}>
+        <h2 style={{ fontSize: "32px", fontWeight: "bold", textAlign: "center" , marginBottom: "20px", color: "#333" }}>
            All Ice Creams
         </h2>
+        <br />
         <div style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",

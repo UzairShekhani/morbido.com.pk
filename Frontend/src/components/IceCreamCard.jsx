@@ -29,24 +29,40 @@ const IceCreamCard = ({ item }) => {
         }}
       />
 
-      <h3 style={{ marginTop: "12px", fontSize: "16px", fontWeight: "bold", color: "#333" }}>
+      <h3
+        style={{
+          marginTop: "12px",
+          fontSize: "16px",
+          fontWeight: "bold",
+          color: "#333",
+        }}
+      >
         {item.name}
       </h3>
       <p style={{ color: "#888", fontSize: "14px" }}>{item.category}</p>
-      <p style={{ fontWeight: "bold", color: "#f15b5b", fontSize: "15px" }}>Rs. {item.price}</p>
+      <p style={{ fontWeight: "bold", color: "#f15b5b", fontSize: "15px" }}>
+        Rs. {item.price}
+      </p>
 
       <button
         onClick={() => addToCart(item)}
         style={{
           marginTop: "12px",
-          backgroundColor: "#28a745",
+          background: "linear-gradient(135deg,rgb(129, 129, 129),rgb(0, 0, 0))",
           color: "#fff",
-          padding: "10px 16px",
+          padding: "12px 18px",
           border: "none",
-          borderRadius: "6px",
+          borderRadius: "8px",
           cursor: "pointer",
-          fontSize: "14px",
+          fontSize: "15px",
+          fontWeight: "bold",
+          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+          transition: "all 0.3s ease-in-out",
+          transform: "scale(1)",
         }}
+        onMouseOver={(e) => (e.target.style.transform = "scale(1.05)")}
+        onMouseOut={(e) => (e.target.style.transform = "scale(1)")}
+        onMouseDown={(e) => (e.target.style.transform = "scale(0.95)")}
       >
         Add to Cart
       </button>
