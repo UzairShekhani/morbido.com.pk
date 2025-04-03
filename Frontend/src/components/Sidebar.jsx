@@ -41,9 +41,10 @@ const Sidebar = () => {
         <br />
         <br />
         <ul>
+          <li onClick={() => handleNavigate("/")}> Home</li>
+
           <li onClick={() => handleNavigate("/all-products")}>All Products</li>
 
-          <li onClick={() => handleNavigate("/")}> Home</li>
           <li onClick={() => handleNavigate("/fudge-bar")}> Chocolate Fudge</li>
           <li onClick={() => handleNavigate("/chocolate-delight")}>
             {" "}
