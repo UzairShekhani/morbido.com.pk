@@ -7,6 +7,7 @@ import CircleSlider from './components/CircleSlider';
 import ProductPage from './components/ProductPage';
 import AdminPanel from './admin/AdminPanel';
 import Login from './admin/Login';
+import Checkout from "./components/Checkout"; // ✅ path match karein
 import AllProducts from "./components/AllProducts"; // ⬅️ Add this at the top
 
 function App() {
@@ -44,6 +45,7 @@ function App() {
 const MainRoutes = () => (
   <Routes>
     <Route path="/" element={<SliderMain />} />
+    <Route path="/checkout" element={<Checkout />} />
     <Route path="/flavors" element={<FlavorsPage />} />
     <Route path="/fudge-bar" element={<CircleSlider title="Fudge Bar" />} />
     <Route path="/chocolate-delight" element={<CircleSlider title="Chocolate Delight" />} />

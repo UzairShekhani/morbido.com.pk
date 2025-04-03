@@ -16,14 +16,16 @@ const bannerRoutes = require("./routes/bannerRoutes");
 const flavorRoutes = require("./routes/flavorRoutes");
 const sliderRoutes = require("./routes/sliderRoutes");
 const authRoutes = require("./routes/authRoutes");
-const productRoutes = require("./routes/productRoutes"); // ✅ yahan hona chahiye
+const productRoutes = require("./routes/productRoutes");
+const orderRoutes = require("./routes/orderRoutes"); // ✅ NEW
 
 // ✅ Routes use
 app.use("/api/banners", bannerRoutes);
 app.use("/api/flavors", flavorRoutes);
 app.use("/api/sliders", sliderRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api/products", productRoutes); // ✅ iske neeche hona chahiye import ke
+app.use("/api/products", productRoutes);
+app.use("/api/orders", orderRoutes); // ✅ NEW
 
 // ✅ MongoDB Connect
 mongoose
