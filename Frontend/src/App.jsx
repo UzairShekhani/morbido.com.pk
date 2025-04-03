@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import FlavorsPage from './components/FlavorsPage';
 import Sidebar from './components/Sidebar';
 import SliderMain from './components/SliderMain';
 import CircleSlider from './components/CircleSlider';
@@ -43,6 +44,7 @@ function App() {
 const MainRoutes = () => (
   <Routes>
     <Route path="/" element={<SliderMain />} />
+    <Route path="/flavors" element={<FlavorsPage />} />
     <Route path="/fudge-bar" element={<CircleSlider title="Fudge Bar" />} />
     <Route path="/chocolate-delight" element={<CircleSlider title="Chocolate Delight" />} />
     <Route path="/cookie-details" element={<CircleSlider title="Cookie Details" />} />

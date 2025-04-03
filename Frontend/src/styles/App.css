@@ -51,7 +51,8 @@ p {
 .logo a {
   margin-bottom: 20px;
 }
-#prev, #next {
+#prev,
+#next {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -67,7 +68,8 @@ p {
   z-index: 100;
 }
 
-#prev:hover, #next:hover {
+#prev:hover,
+#next:hover {
   background-color: rgba(255, 255, 255, 0.3);
   color: #000;
 }
@@ -577,7 +579,6 @@ header nav ul {
   }
 }
 
-
 /* Navbar Styles */
 .mor-navbar {
   display: flex;
@@ -614,10 +615,10 @@ header nav ul {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  position: fixed; /* important! */
-  top: 25px; /* or whatever position you want */
-  right: 40px;
-  z-index: 3000; /* Make sure it's on top of sidebar */
+  position: fixed;
+  top: 28px;
+  right: 84px;
+  z-index: 3000;
   transition: transform 0.3s ease;
 }
 
@@ -763,8 +764,6 @@ header nav ul {
   }
 }
 
-
-
 /************************************************************
   CUSTOM SCROLLBAR STYLING (for an ice-cream theme)
   Works best in Chrome/Safari/Edge. Partial in Firefox.
@@ -777,7 +776,7 @@ header nav ul {
 
 /* For Firefox – auto width, pastel track, and colored thumb */
 * {
-  scrollbar-width: auto; 
+  scrollbar-width: auto;
   scrollbar-color: #ff7e5f #ffeaf0; /* thumb, track */
 }
 
@@ -804,4 +803,3 @@ header nav ul {
   /* Slightly darker + more saturated gradient on hover */
   background: linear-gradient(to bottom, #ff5e3f, #ff95a0);
 }
-
