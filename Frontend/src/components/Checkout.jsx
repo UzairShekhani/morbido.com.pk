@@ -1,61 +1,83 @@
 import { useCart } from "../context/CartContext";
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 const Checkout = () => {
   const { cartItems, clearCart } = useCart();
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    address: ""
-  });
-  const navigate = useNavigate();
+  const [form, setForm] = useState({ name: "", phone: "", address: "" });
+  const [success, setSuccess] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (cartItems.length === 0) {
-      return alert("Cart is empty!");
-    }
+  const handlePlaceOrder = async () => {
+    if (!form.name || !form.phone || !form.address) return alert("Please fill all fields.");
+    if (cartItems.length === 0) return alert("Cart is empty!");
 
     try {
-      const res = await axios.post("http://localhost:5000/api/orders", {
+      await axios.post("http://localhost:5000/api/orders", {
         customer: form,
-        items: cartItems
+        items: cartItems,
       });
-      alert("Order placed successfully!");
+
+      setSuccess(true);
       clearCart();
-      navigate("/");
     } catch (err) {
-      console.error("Order Submit Error:", err);
-      alert("Something went wrong!");
+      console.error("Order failed:", err);
     }
   };
 
   return (
-    <div style={{ padding: "100px 20px", maxWidth: "600px", margin: "auto" }}>
-      <h2>🧾 Checkout</h2>
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-        <input type="text" name="name" placeholder="Your Name" value={form.name} onChange={handleChange} required />
-        <input type="email" name="email" placeholder="Email" value={form.email} onChange={handleChange} required />
-        <input type="text" name="phone" placeholder="Phone" value={form.phone} onChange={handleChange} required />
-        <textarea name="address" placeholder="Address" value={form.address} onChange={handleChange} required />
-        <button type="submit" style={{ padding: "10px", background: "#28a745", color: "#fff", border: "none", borderRadius: "6px" }}>
-          Place Order
-        </button>
-      </form>
+    <div style={{ padding: "80px 20px" }}>
+      <h2>Checkout</h2>
 
-      <h3 style={{ marginTop: "30px" }}>🛒 Cart Summary</h3>
-      {cartItems.map((item, idx) => (
-        <div key={idx} style={{ borderBottom: "1px solid #ddd", padding: "10px 0" }}>
-          <strong>{item.name}</strong> x {item.quantity} - Rs. {item.price * item.quantity}
+      {success ? (
+        <div style={{ marginTop: "30px", fontWeight: "bold", color: "green" }}>
+          ✅ Order placed successfully!
         </div>
-      ))}
+      ) : (
+        <>
+          <div style={{ marginTop: "20px" }}>
+            <input
+              name="name"
+              placeholder="Your Name"
+              onChange={handleChange}
+              value={form.name}
+              style={{ marginBottom: "10px", padding: "8px", width: "100%" }}
+            />
+            <input
+              name="phone"
+              placeholder="Phone Number"
+              onChange={handleChange}
+              value={form.phone}
+              style={{ marginBottom: "10px", padding: "8px", width: "100%" }}
+            />
+            <textarea
+              name="address"
+              placeholder="Address"
+              onChange={handleChange}
+              value={form.address}
+              style={{ marginBottom: "10px", padding: "8px", width: "100%" }}
+            />
+          </div>
+
+          <button
+            onClick={handlePlaceOrder}
+            style={{
+              backgroundColor: "#28a745",
+              color: "#fff",
+              border: "none",
+              padding: "10px 20px",
+              cursor: "pointer",
+              fontWeight: "bold",
+              fontSize: "16px",
+            }}
+          >
+            Place Order
+          </button>
+        </>
+      )}
     </div>
   );
 };

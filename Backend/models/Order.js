@@ -1,22 +1,18 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const orderSchema = new mongoose.Schema({
-  name: String,
-  phone: String,
-  address: String,
   items: [
     {
       name: String,
-      image: String,
       price: Number,
       quantity: Number,
+      image: String,
     },
   ],
-  total: Number,
   createdAt: {
     type: Date,
     default: Date.now,
   },
 });
 
-export default mongoose.model("Order", orderSchema);
+module.exports = mongoose.model("Order", orderSchema);
