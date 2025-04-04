@@ -24,5 +24,7 @@ router.get("/:id", getFlavorById);
 router.post("/", upload.single("image"), createFlavor);
 router.put("/:id", upload.single("image"), updateFlavor);
 router.delete("/:id", deleteFlavor);
+router.put("/:id", updateFlavor);
+
 
 module.exports = router;

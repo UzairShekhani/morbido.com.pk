@@ -4,6 +4,7 @@ const IceCreamCard = ({ item }) => {
   const { addToCart } = useCart();
 
   return (
+    <>
     <div
       style={{
         backgroundColor: "#fff",
@@ -66,6 +67,7 @@ const IceCreamCard = ({ item }) => {
       >
         Add to Cart
       </button>
+      
 
       <style>
         {`
@@ -82,6 +84,8 @@ const IceCreamCard = ({ item }) => {
         `}
       </style>
     </div>
+   
+    </>
   );
 };
 
