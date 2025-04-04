@@ -43,28 +43,21 @@ const FlavorAdmin = () => {
     fetchFlavors();
   };
 
-  const updateFlavorQty = async (id, quantity) => {
-    try {
-      await axios.put(`http://localhost:5000/api/flavors/${id}`, { quantity });
-      fetchFlavors();
-    } catch (err) {
-      console.error("Quantity update failed:", err);
-    }
+  const updateFlavorQty = async (id, qty) => {
+    await axios.put(`http://localhost:5000/api/flavors/${id}`, { quantity: qty });
+    fetchFlavors(); // Refresh list
   };
 
   return (
-    <div style={{ maxWidth: "800px", margin: "30px auto", padding: "20px" }}>
+    <div>
       <h2>🍦 Manage Flavors</h2>
-
-      <form onSubmit={createFlavor} style={{ marginBottom: "30px" }}>
+      <form onSubmit={createFlavor}>
         <input
           type="text"
           name="name"
           placeholder="Flavor Name"
           value={form.name}
           onChange={handleChange}
-          required
-          style={{ marginRight: "10px", padding: "8px" }}
         />
         <input
           type="number"
@@ -72,49 +65,31 @@ const FlavorAdmin = () => {
           placeholder="Quantity (L)"
           value={form.quantity}
           onChange={handleChange}
-          required
-          style={{ marginRight: "10px", padding: "8px", width: "120px" }}
         />
-        <input type="file" onChange={handleFile} style={{ marginRight: "10px" }} />
-        <button type="submit" style={{ padding: "8px 16px" }}>Add Flavor</button>
+        <input type="file" onChange={handleFile} />
+        <button type="submit">Add Flavor</button>
       </form>
 
       <hr />
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "25px" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "15px" }}>
         {flavors.map((flavor) => (
-          <div key={flavor._id} style={{ border: "1px solid #ddd", borderRadius: "10px", padding: "15px" }}>
+          <div key={flavor._id} style={{ border: "1px solid #ddd", borderRadius: 8, padding: 15, width: 200 }}>
             <img
               src={`http://localhost:5000/uploads/${flavor.image}`}
               alt={flavor.name}
-              width="100%"
-              height="140px"
-              style={{ objectFit: "cover", borderRadius: "8px" }}
+              style={{ width: "100%", borderRadius: 8 }}
             />
-            <h4 style={{ margin: "10px 0 5px" }}>{flavor.name}</h4>
-            <p style={{ margin: "5px 0" }}><strong>Quantity:</strong></p>
+            <h4>{flavor.name}</h4>
             <input
               type="number"
               value={flavor.quantity}
               onChange={(e) => updateFlavorQty(flavor._id, e.target.value)}
-              style={{
-                width: "100%",
-                padding: "6px",
-                borderRadius: "6px",
-                border: "1px solid #ccc",
-                marginBottom: "10px"
-              }}
+              style={{ width: "100%", marginTop: 5 }}
             />
             <button
               onClick={() => deleteFlavor(flavor._id)}
-              style={{
-                padding: "6px 12px",
-                background: "#f44336",
-                color: "white",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer"
-              }}
+              style={{ backgroundColor: "#f44336", color: "#fff", marginTop: 10 }}
             >
               Delete
             </button>

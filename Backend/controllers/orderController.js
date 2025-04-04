@@ -1,3 +1,4 @@
+const Order = require("../models/Order");
 const Flavor = require("../models/Flavor");
 
 exports.placeOrder = async (req, res) => {
@@ -15,5 +16,14 @@ exports.placeOrder = async (req, res) => {
     res.status(201).json(order);
   } catch (error) {
     res.status(500).json({ message: "Order failed", error });
+  }
+};
+
+exports.getOrders = async (req, res) => {
+  try {
+    const orders = await Order.find().sort({ createdAt: -1 });
+    res.status(200).json(orders);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch orders", error });
   }
 };

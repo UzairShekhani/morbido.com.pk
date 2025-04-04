@@ -39,33 +39,15 @@ exports.createFlavor = async (req, res) => {
 
 // Update flavor
 exports.updateFlavor = async (req, res) => {
+  const { quantity } = req.body;
   try {
-    const { name, heading, price } = req.body;
-    let updateData = { name, heading, price };
-
-    if (req.file) {
-      updateData.image = req.file.filename;
-    }
-
-    const existing = await Flavor.findById(req.params.id);
-    if (!existing) return res.status(404).json({ message: "Flavor not found" });
-
-    // Remove old image if new one uploaded
-    if (req.file && existing.image) {
-      const oldPath = path.join(__dirname, "..", "uploads", existing.image);
-      if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
-    }
-
-    const updatedFlavor = await Flavor.findByIdAndUpdate(
-      req.params.id,
-      updateData,
-      { new: true }
-    );
-    res.json(updatedFlavor);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
+    const updated = await Flavor.findByIdAndUpdate(req.params.id, { quantity }, { new: true });
+    res.json(updated);
+  } catch (err) {
+    res.status(500).json({ message: "Update failed", err });
   }
 };
+
 
 // Delete flavor
 exports.deleteFlavor = async (req, res) => {
