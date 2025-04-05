@@ -38,15 +38,27 @@ exports.createFlavor = async (req, res) => {
 };
 
 // Update flavor
+// backend/controllers/flavorController.js
 exports.updateFlavor = async (req, res) => {
-  const { quantity } = req.body;
   try {
-    const updated = await Flavor.findByIdAndUpdate(req.params.id, { quantity }, { new: true });
+    const { quantity, increase } = req.body;
+
+    const updateData = increase
+      ? { $inc: { quantity: quantity || 1 } } // ✅ add quantity
+      : { quantity }; // normal overwrite
+
+    const updated = await Flavor.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true }
+    );
+
     res.json(updated);
   } catch (err) {
-    res.status(500).json({ message: "Update failed", err });
+    res.status(500).json({ message: "Flavor update failed", err });
   }
 };
+
 
 
 // Delete flavor

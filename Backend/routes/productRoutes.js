@@ -1,27 +1,47 @@
-// routes/productRoutes.js
-
 const express = require("express");
 const router = express.Router();
-const multer = require("multer");
+const Product = require("../models/Product");
+import { toast } from "react-hot-toast";
 
-const {
-  getProducts,
-  createProduct,
-  updateProduct,
-  deleteProduct,
-} = require("../controllers/productController");
-
-// ✅ Image upload setup
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, "uploads/"),
-  filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname),
+// ✅ Get All Products
+router.get("/", async (req, res) => {
+  try {
+    const products = await Product.find();
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch products" });
+  }
 });
-const upload = multer({ storage });
 
-// ✅ Routes
-router.get("/", getProducts);
-router.post("/", upload.single("image"), createProduct);
-router.put("/:id", upload.single("image"), updateProduct);
-router.delete("/:id", deleteProduct);
+// ✅ DECREASE quantity by 1 (on addToCart)
+router.put("/:id/increase", async (req, res) => {
+  try {
+    const { quantity } = req.body; // required for +1
+    const updated = await Product.findByIdAndUpdate(
+      req.params.id,
+      { $inc: { quantity: quantity || 1 } },
+      { new: true }
+    );
+    res.json(updated);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to increase quantity" });
+  }
+});
+
+router.put("/:id/decrease", async (req, res) => {
+  try {
+    const updated = await Product.findByIdAndUpdate(
+      req.params.id,
+      { $inc: { quantity: -1 } },
+      { new: true }
+    );
+    res.json(updated);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to decrease quantity" });
+  }
+});
+
+toast.success("Removed from cart!");
+
 
 module.exports = router;

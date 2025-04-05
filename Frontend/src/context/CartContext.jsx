@@ -1,41 +1,75 @@
-// context/CartContext.jsx
-
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import axios from "axios";
 
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState(() => {
+    const stored = localStorage.getItem("cartItems");
+    return stored ? JSON.parse(stored) : [];
+  });
 
-  const addToCart = (newItem) => {
-    setCartItems((prevItems) => {
-      const existing = prevItems.find(item => item._id === newItem._id);
-      if (existing) {
-        return prevItems.map(item =>
-          item._id === newItem._id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      } else {
-        return [...prevItems, { ...newItem, quantity: 1 }];
-      }
-    });
+  useEffect(() => {
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+  }, [cartItems]);
+
+  // ✅ Add to Cart (Decrease from DB)
+  const addToCart = async (item) => {
+    const exists = cartItems.find((p) => p._id === item._id);
+
+    if (exists) {
+      setCartItems((prev) =>
+        prev.map((p) =>
+          p._id === item._id ? { ...p, quantity: p.quantity + 1 } : p
+        )
+      );
+    } else {
+      setCartItems((prev) => [...prev, { ...item, quantity: 1 }]);
+    }
+
+    await axios.put(`http://localhost:5000/api/products/${item._id}/decrease`);
   };
 
-  const removeFromCart = (id) => {
-    setCartItems((prevItems) =>
-      prevItems
-        .map(item =>
-          item._id === id
-            ? { ...item, quantity: item.quantity - 1 }
-            : item
-        )
-        .filter(item => item.quantity > 0)
-    );
+  // ✅ Remove ONE from cart and increase DB quantity
+  const removeOneFromCart = async (productId) => {
+    const found = cartItems.find((item) => item._id === productId);
+    if (!found) return;
+
+    try {
+      // Update DB
+      await axios.put(`http://localhost:5000/api/products/${productId}/increase`, {
+        quantity: 1,
+      });
+
+      if (found.quantity === 1) {
+        setCartItems((prev) => prev.filter((item) => item._id !== productId));
+      } else {
+        setCartItems((prev) =>
+          prev.map((item) =>
+            item._id === productId
+              ? { ...item, quantity: item.quantity - 1 }
+              : item
+          )
+        );
+      }
+    } catch (err) {
+      console.error("Error increasing quantity:", err.message);
+    }
+  };
+
+  const clearCart = () => {
+    setCartItems([]);
   };
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart }}>
+    <CartContext.Provider
+      value={{
+        cartItems,
+        addToCart,
+        removeOneFromCart,
+        clearCart,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );

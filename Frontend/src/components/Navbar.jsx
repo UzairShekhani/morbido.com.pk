@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
-  const { cartItems, removeFromCart } = useCart();
+  const { cartItems, removeOneFromCart } = useCart();
   const [showCart, setShowCart] = useState(false);
   const cartRef = useRef();
   const navigate = useNavigate();
@@ -23,13 +23,13 @@ const Navbar = () => {
     navigate("/checkout");
   };
 
-  const totalAmount = cartItems.reduce((total, item) => {
-    return total + item.price * item.quantity;
-  }, 0);
+  const totalAmount = cartItems.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
 
   return (
     <>
-      {/* Top Navbar */}
       <header
         className="mor-navbar"
         style={{
@@ -38,7 +38,7 @@ const Navbar = () => {
           left: 0,
           right: 0,
           zIndex: 1000,
-          background: "linear-gradient(to right, #ffb6c1, #ffcba4)",
+          background: "#ffe6e6",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
@@ -47,20 +47,19 @@ const Navbar = () => {
         }}
       >
         <div className="mor-logo">
-          <span style={{ fontSize: "22px", fontWeight: "bold" }}>
+          <strong style={{ fontSize: "20px" }}>
             MORBIDO<sup>®</sup>
-          </span>
+          </strong>
           <br />
-          <small style={{ fontSize: "12px" }}>Gelato Division</small>
+          <small>Gelato Division</small>
         </div>
 
-        {/* Cart Icon */}
         <div
           style={{ position: "relative", cursor: "pointer" }}
           onClick={() => setShowCart(true)}
         >
           <img
-            style={{ width: "34px" }}
+            style={{ width: "30px" }}
             src="https://cdn-icons-png.flaticon.com/512/1170/1170678.png"
             alt="Cart"
           />
@@ -73,7 +72,7 @@ const Navbar = () => {
                 background: "red",
                 color: "white",
                 borderRadius: "50%",
-                padding: "2px 6px",
+                padding: "3px 6px",
                 fontSize: "12px",
                 fontWeight: "bold",
               }}
@@ -102,7 +101,6 @@ const Navbar = () => {
           flexDirection: "column",
         }}
       >
-        {/* Cart Header */}
         <div
           style={{
             display: "flex",
@@ -127,61 +125,38 @@ const Navbar = () => {
 
         <hr style={{ margin: "15px 0" }} />
 
-        {/* Cart List */}
         <div style={{ flex: 1, overflowY: "auto" }}>
           {cartItems.length > 0 ? (
             <ul style={{ listStyle: "none", padding: 0 }}>
               {cartItems.map((item, idx) => (
-                <li
-                  key={idx}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "10px",
-                    marginBottom: "15px",
-                    borderBottom: "1px solid #eee",
-                    paddingBottom: "10px",
-                  }}
-                >
+                <li key={idx} style={{ display: "flex", gap: 10 }}>
                   <img
                     src={`http://localhost:5000/uploads/${item.image}`}
-                    alt={item.name}
-                    style={{
-                      width: "50px",
-                      height: "50px",
-                      borderRadius: "8px",
-                      objectFit: "cover",
-                    }}
+                    width="50"
                   />
                   <div style={{ flex: 1 }}>
-                    <strong style={{ fontSize: "15px", color: "#333" }}>
-                      {item.name}
-                    </strong>
+                    <strong>{item.name}</strong>
                     {item.quantity > 1 && (
                       <span
                         style={{
-                          backgroundColor: "#eee",
-                          color: "#f44336",
+                          marginLeft: 8,
+                          color: "#f15b5b",
                           fontWeight: "bold",
-                          borderRadius: "12px",
-                          fontSize: "12px",
-                          marginLeft: "8px",
-                          padding: "2px 6px",
                         }}
                       >
                         x{item.quantity}
                       </span>
                     )}
                     <br />
-                    <span>Rs. {item.price}</span>
+                    <small>Rs. {item.price}</small>
                   </div>
                   <button
-                    onClick={() => removeFromCart(item._id)}
+                    onClick={() => removeOneFromCart(item._id)}
                     style={{
-                      background: "transparent",
                       border: "none",
-                      fontSize: "16px",
                       color: "#f44336",
+                      background: "none",
+                      fontSize: "16px",
                       cursor: "pointer",
                     }}
                   >
@@ -195,19 +170,13 @@ const Navbar = () => {
           )}
         </div>
 
-        {/* Checkout Bar */}
+        {/* Checkout Footer */}
         {cartItems.length > 0 && (
-          <div
-            style={{
-              padding: "15px 0 0",
-              borderTop: "1px solid #eee",
-            }}
-          >
+          <div style={{ paddingTop: "15px", borderTop: "1px solid #eee" }}>
             <div
               style={{
                 display: "flex",
                 justifyContent: "space-between",
-                marginBottom: "10px",
                 fontWeight: "bold",
                 fontSize: "15px",
               }}
@@ -218,15 +187,16 @@ const Navbar = () => {
             <button
               onClick={handleCheckout}
               style={{
+                marginTop: "10px",
                 backgroundColor: "#28a745",
                 color: "#fff",
                 width: "100%",
-                padding: "12px",
+                padding: "10px",
                 fontWeight: "600",
-                fontSize: "16px",
-                borderRadius: "8px",
-                cursor: "pointer",
+                fontSize: "15px",
+                borderRadius: "6px",
                 border: "none",
+                cursor: "pointer",
               }}
             >
               Checkout
