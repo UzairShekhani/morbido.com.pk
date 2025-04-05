@@ -91,7 +91,7 @@ const ManageMainSlider = () => {
           textAlign: "center",
           width: "fit-content"
         }}>
-          📁 Choose Slide Image
+           Choose Slide Image
           <input
             type="file"
             accept="image/*"
@@ -110,7 +110,7 @@ const ManageMainSlider = () => {
           border: "none",
           cursor: "pointer"
         }}>
-          ➕ Add Slide
+           Add Slide
         </button>
       </form>
 

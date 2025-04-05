@@ -30,11 +30,11 @@ const FlavorAdmin = () => {
 
     try {
       await axios.post("http://localhost:5000/api/flavors", data);
-      toast.success("🍦 Flavor added!");
+      toast.success(" Flavor added!");
       setForm({ name: "", image: null });
       fetchFlavors();
     } catch {
-      toast.error("❌ Error adding flavor");
+      toast.error(" Error adding flavor");
     }
   };
 
@@ -96,7 +96,7 @@ const FlavorAdmin = () => {
             cursor: "pointer",
           }}
         >
-          ➕ Add Flavor
+           Add Flavor
         </button>
       </form>
 
