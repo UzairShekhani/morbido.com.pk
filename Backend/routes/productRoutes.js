@@ -1,7 +1,36 @@
 const express = require("express");
 const router = express.Router();
 const Product = require("../models/Product");
-import { toast } from "react-hot-toast";
+const multer = require("multer");
+const path = require("path");
+
+// ✅ Image upload
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/");
+  },
+  filename: function (req, file, cb) {
+    const ext = path.extname(file.originalname);
+    cb(null, Date.now() + ext);
+  },
+});
+const upload = multer({ storage });
+
+// ✅ Create Product
+router.post("/", upload.single("image"), async (req, res) => {
+  try {
+    const { name, price, quantity, category } = req.body;
+    const image = req.file?.filename;
+
+    const product = new Product({ name, price, quantity, category, image });
+    await product.save();
+
+    res.status(201).json(product);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Failed to add product" });
+  }
+});
 
 // ✅ Get All Products
 router.get("/", async (req, res) => {
@@ -13,35 +42,24 @@ router.get("/", async (req, res) => {
   }
 });
 
-// ✅ DECREASE quantity by 1 (on addToCart)
-router.put("/:id/increase", async (req, res) => {
+// ✅ Delete Product
+router.delete("/:id", async (req, res) => {
   try {
-    const { quantity } = req.body; // required for +1
-    const updated = await Product.findByIdAndUpdate(
-      req.params.id,
-      { $inc: { quantity: quantity || 1 } },
-      { new: true }
-    );
-    res.json(updated);
+    await Product.findByIdAndDelete(req.params.id);
+    res.json({ message: "Product deleted" });
   } catch (err) {
-    res.status(500).json({ error: "Failed to increase quantity" });
+    res.status(500).json({ message: "Delete failed" });
   }
 });
 
-router.put("/:id/decrease", async (req, res) => {
+// ✅ Update Product
+router.put("/:id", async (req, res) => {
   try {
-    const updated = await Product.findByIdAndUpdate(
-      req.params.id,
-      { $inc: { quantity: -1 } },
-      { new: true }
-    );
+    const updated = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
     res.json(updated);
   } catch (err) {
-    res.status(500).json({ error: "Failed to decrease quantity" });
+    res.status(500).json({ message: "Update failed" });
   }
 });
-
-toast.success("Removed from cart!");
-
 
 module.exports = router;
