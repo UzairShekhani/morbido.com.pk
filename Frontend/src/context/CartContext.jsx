@@ -15,25 +15,21 @@ export const CartProvider = ({ children }) => {
   }, [cartItems]);
 
   // ✅ Add to Cart (Decrease from DB)
-  const addToCart = async (item) => {
-    const exists = cartItems.find((p) => p._id === item._id);
+  // ✅ Add to Cart (Decrease from DB)
+const addToCart = async (item) => {
+  const exists = cartItems.find((p) => p._id === item._id);
 
-    if (exists) {
-      setCartItems((prev) =>
-        prev.map((p) =>
-          p._id === item._id ? { ...p, quantity: p.quantity + 1 } : p
-        )
-      );
-    } else {
-      setCartItems((prev) => [...prev, { ...item, quantity: 1 }]);
-    }
+  if (exists) {
+    setCartItems((prev) =>
+      prev.map((p) =>
+        p._id === item._id ? { ...p, quantity: p.quantity + 1 } : p
+      )
+    );
+  } else {
+    setCartItems((prev) => [...prev, { ...item, quantity: 1 }]);
+  }
 
-    try {
-      await axios.put(`http://localhost:5000/api/products/${item._id}/decrease`);
-      toast.success(" Added to cart");
-    } catch (err) {
-      toast.error("Failed to decrease stock");
-    }
+    await axios.put(`http://localhost:5000/api/products/${item._id}/decrease`);
   };
 
   // ✅ Remove ONE from cart and increase DB quantity
@@ -66,7 +62,7 @@ export const CartProvider = ({ children }) => {
 
   const clearCart = () => {
     setCartItems([]);
-    toast("🧹 Cart cleared");
+    toast(" Cart cleared");
   };
 
   return (
