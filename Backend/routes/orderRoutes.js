@@ -1,32 +1,32 @@
-// routes/orderRoutes.js
 const express = require("express");
+const multer = require("multer");
+const Order = require("../models/Order");
+
 const router = express.Router();
-const { placeOrder, getOrders } = require("../controllers/orderController");
-const Order = require("../models/Order"); // ✅ YOU FORGOT THIS IMPORT
 
-// Create order
-router.post("/", placeOrder);
+// Receipt image config
+const storage = multer.diskStorage({
+  destination: "uploads/",
+  filename: (_, file, cb) => cb(null, Date.now() + "-" + file.originalname)
+});
+const upload = multer({ storage });
 
-// Get all orders
-router.get("/", getOrders);
-
-// ✅ Update Order Status
-router.put("/:id/status", async (req, res) => {
+router.post("/", upload.single("receipt"), async (req, res) => {
   try {
-    const updated = await Order.findByIdAndUpdate(
-      req.params.id,
-      { status: req.body.status },
-      { new: true }
-    );
+    const { customer, items, paymentMethod, deliveryFee } = req.body;
 
-    if (!updated) {
-      return res.status(404).json({ error: "Order not found" });
-    }
+    const newOrder = new Order({
+      customer: JSON.parse(customer),
+      items: JSON.parse(items),
+      paymentMethod,
+      deliveryFee,
+      receiptImage: req.file ? req.file.filename : null,
+    });
 
-    res.json(updated);
+    await newOrder.save();
+    res.status(201).json({ message: "Order placed", order: newOrder });
   } catch (err) {
-    console.error("❌ Error updating order:", err);
-    res.status(500).json({ error: "Failed to update status", details: err });
+    res.status(500).json({ error: "Order failed", details: err.message });
   }
 });
 
