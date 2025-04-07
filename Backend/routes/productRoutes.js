@@ -53,13 +53,41 @@ router.delete("/:id", async (req, res) => {
 });
 
 // ✅ Update Product
-router.put("/:id", async (req, res) => {
+// Increase quantity
+// PUT /api/products/:id/decrease
+router.put("/:id/decrease", async (req, res) => {
   try {
-    const updated = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.json(updated);
+    const product = await Product.findByIdAndUpdate(
+      req.params.id,
+      { $inc: { quantity: -1 } },
+      { new: true }
+    );
+    if (!product) return res.status(404).json({ error: "Product not found" });
+
+    res.json(product);
   } catch (err) {
-    res.status(500).json({ message: "Update failed" });
+    res.status(500).json({ error: "Failed to decrease quantity" });
   }
 });
+
+// PUT /api/products/:id/increase
+// server/routes/productRoutes.js
+
+router.put("/:id/increase", async (req, res) => {
+  try {
+    const { quantity } = req.body;
+    const updated = await Product.findByIdAndUpdate(
+      req.params.id,
+      { $inc: { quantity: quantity || 1 } },
+      { new: true }
+    );
+    res.json(updated);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to increase product quantity" });
+  }
+});
+
+
+
 
 module.exports = router;

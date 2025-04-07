@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
+import toast from "react-hot-toast"; // ✅ Toast added
 
 const CartContext = createContext();
 
@@ -27,7 +28,12 @@ export const CartProvider = ({ children }) => {
       setCartItems((prev) => [...prev, { ...item, quantity: 1 }]);
     }
 
-    await axios.put(`http://localhost:5000/api/products/${item._id}/decrease`);
+    try {
+      await axios.put(`http://localhost:5000/api/products/${item._id}/decrease`);
+      toast.success(" Added to cart");
+    } catch (err) {
+      toast.error("Failed to decrease stock");
+    }
   };
 
   // ✅ Remove ONE from cart and increase DB quantity
@@ -36,7 +42,6 @@ export const CartProvider = ({ children }) => {
     if (!found) return;
 
     try {
-      // Update DB
       await axios.put(`http://localhost:5000/api/products/${productId}/increase`, {
         quantity: 1,
       });
@@ -52,13 +57,16 @@ export const CartProvider = ({ children }) => {
           )
         );
       }
+
+      toast.success(" Removed 1 item");
     } catch (err) {
-      console.error("Error increasing quantity:", err.message);
+      toast.error("Error increasing stock");
     }
   };
 
   const clearCart = () => {
     setCartItems([]);
+    toast("🧹 Cart cleared");
   };
 
   return (

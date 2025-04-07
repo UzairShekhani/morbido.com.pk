@@ -31,7 +31,7 @@ const IceCreamCard = ({ item }) => {
         src={`http://localhost:5000/uploads/${item.image}`}
         alt={item.name}
         style={{
-          width: "100%",
+          width: "77%",
           height: 180,
           objectFit: "cover",
           borderRadius: 10,
