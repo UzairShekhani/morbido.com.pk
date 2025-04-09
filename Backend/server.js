@@ -16,6 +16,7 @@ const sliderRoutes = require("./routes/sliderRoutes");
 const authRoutes = require("./routes/authRoutes");
 const productRoutes = require("./routes/productRoutes");
 const orderRoutes = require("./routes/orderRoutes");
+const distanceRouter = require("./distance"); // Import the distance router
 
 app.use("/api/banners", bannerRoutes);
 app.use("/api/flavors", flavorRoutes);
@@ -23,6 +24,7 @@ app.use("/api/sliders", sliderRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes); // ✅ Orders Route
+app.use("/api/distance", distanceRouter);
 
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,

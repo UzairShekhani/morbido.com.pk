@@ -1,10 +1,8 @@
-
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();
 
-const GOOGLE_MAPS_API_KEY = "YOUR_GOOGLE_API_KEY";
-const SHOP_LOCATION = "24.847628984056585,67.0579537149963"; // Happy Palace School location
+const SHOP_LOCATION = "24.847628984056585,67.0579537149963"; // Happy Palace School
 
 router.post("/calculate", async (req, res) => {
   const { address } = req.body;
@@ -16,7 +14,7 @@ router.post("/calculate", async (req, res) => {
         params: {
           origins: SHOP_LOCATION,
           destinations: address,
-          key: GOOGLE_MAPS_API_KEY,
+          key: "AIzaSyDbZjILZ_-8uNlUCyLvq4-ACFMDyKkw-z0", // ← Replace with working key
         },
       }
     );

@@ -9,6 +9,8 @@ import Login from "./admin/Login";
 import Checkout from "./components/Checkout";
 import AllProducts from "./components/AllProducts";
 import FlavorsPage from "./components/FlavorsPage";
+import HomeBanner from "./components/HomeBanner";
+
 import { Toaster } from "react-hot-toast";
 
 function App() {
@@ -28,7 +30,7 @@ function App() {
 
 const MainRoutes = () => (
   <Routes>
-    <Route path="/" element={<SliderMain />} />
+    <Route path="/" element={<><HomeBanner /><SliderMain /></>} />
     <Route path="/checkout" element={<Checkout />} />
     <Route path="/flavors" element={<FlavorsPage />} />
     <Route path="/fudge-bar" element={<CircleSlider title="Fudge Bar" />} />

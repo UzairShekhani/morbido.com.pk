@@ -1,11 +1,8 @@
 const mongoose = require("mongoose");
 
 const bannerSchema = new mongoose.Schema({
-  title: String,
-  subtitle: String,
-  link: String,
-  image: String, // store filename from multer
-  isActive: { type: Boolean, default: true },
+  image: String,
+  location: String, // "home" or "product"
 });
 
 module.exports = mongoose.model("Banner", bannerSchema);
