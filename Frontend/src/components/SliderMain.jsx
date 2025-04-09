@@ -1,4 +1,3 @@
-// src/components/SliderMain.jsx
 import { useEffect, useState } from "react";
 import gsap from "gsap";
 import { useNavigate } from "react-router-dom";
@@ -6,14 +5,22 @@ import axios from "axios";
 
 const SliderMain = () => {
   const [slides, setSlides] = useState([]);
+  const [banners, setBanners] = useState([]); // ✅ Banner state
   const [index, setIndex] = useState(0);
   const navigate = useNavigate();
 
+  // ✅ Fetch slider + banners
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/sliders/main")
+    axios.get("http://localhost:5000/api/sliders/main")
       .then((res) => setSlides(res.data))
       .catch((err) => console.error("SliderMain fetch error:", err));
+
+    axios.get("http://localhost:5000/api/banners")
+      .then((res) => {
+        const homeBanners = res.data.filter(b => b.location === "home");
+        setBanners(homeBanners);
+      })
+      .catch((err) => console.error("Banner fetch error:", err));
   }, []);
 
   useEffect(() => {
@@ -43,6 +50,18 @@ const SliderMain = () => {
 
   return (
     <div className="page-wrapper">
+      {/* ✅ Banner Image (Top) */}
+      {banners.length > 0 && (
+        <div style={{ marginBottom: "20px", textAlign: "center" }}>
+          <img
+            src={`http://localhost:5000/uploads/${banners[0].image}`}
+            alt="Top Banner"
+            style={{ width: "100%", maxHeight: "250px", objectFit: "cover", borderRadius: "10px" }}
+          />
+        </div>
+      )}
+
+      {/* ✅ Main Slider */}
       <section className="slider-main">
         <div className="container">
           <div className="logo"></div>
@@ -63,9 +82,7 @@ const SliderMain = () => {
           {slides.map((item, idx) => (
             <img
               key={idx}
-              className={`slider-image ${
-                index === idx ? "active" : "inactive"
-              }`}
+              className={`slider-image ${index === idx ? "active" : "inactive"}`}
               src={`http://localhost:5000/uploads/${item.image}`}
               alt={item.heading || `Slide ${idx + 1}`}
               onClick={() => handleClick(item.url || "/")}

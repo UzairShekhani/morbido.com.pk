@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import FlavorsPage from "./components/FlavorsPage";
 import Sidebar from "./components/Sidebar";
 import SliderMain from "./components/SliderMain";
 import CircleSlider from "./components/CircleSlider";
@@ -9,6 +8,7 @@ import AdminPanel from "./admin/AdminPanel";
 import Login from "./admin/Login";
 import Checkout from "./components/Checkout";
 import AllProducts from "./components/AllProducts";
+import FlavorsPage from "./components/FlavorsPage";
 import { Toaster } from "react-hot-toast";
 
 function App() {
