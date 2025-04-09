@@ -4,13 +4,16 @@ const Order = require("../models/Order");
 
 const router = express.Router();
 
-// Receipt image config
+// 🧾 Receipt image ke liye multer setup
 const storage = multer.diskStorage({
   destination: "uploads/",
-  filename: (_, file, cb) => cb(null, Date.now() + "-" + file.originalname)
+  filename: (_, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
 });
 const upload = multer({ storage });
 
+// ✅ Order Create API
 router.post("/", upload.single("receipt"), async (req, res) => {
   try {
     const { customer, items, paymentMethod, deliveryFee } = req.body;
