@@ -1,57 +1,85 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import toast from "react-hot-toast";
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const BannerAdmin = () => {
   const [banners, setBanners] = useState([]);
   const [image, setImage] = useState(null);
-  const [location, setLocation] = useState("home");
+  const [location, setLocation] = useState('home');
 
   const fetchBanners = async () => {
-    const res = await axios.get("http://localhost:5000/api/banners");
+    const res = await axios.get(`/api/banners/${location}`);
     setBanners(res.data);
   };
 
   useEffect(() => {
     fetchBanners();
-  }, []);
+  }, [location]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const data = new FormData();
-    data.append("image", image);
-    data.append("location", location);
+  const handleUpload = async () => {
+    if (!image) return toast.error('Select image');
 
-    await axios.post("http://localhost:5000/api/banners", data);
-    toast.success("Banner uploaded");
-    setImage(null);
-    fetchBanners();
+    const formData = new FormData();
+    formData.append('image', image);
+    formData.append('location', location);
+
+    try {
+      await axios.post('/api/banners', formData);
+      toast.success('Banner uploaded');
+      setImage(null);
+      fetchBanners();
+    } catch (err) {
+      toast.error('Upload failed');
+    }
   };
 
   const deleteBanner = async (id) => {
-    await axios.delete(`http://localhost:5000/api/banners/${id}`);
+    await axios.delete(`/api/banners/${id}`);
+    toast.success('Deleted');
     fetchBanners();
-    toast("Banner deleted");
   };
 
   return (
-    <div style={{ padding: 20 }}>
-      <h2> Manage Banners</h2>
-      <form onSubmit={handleSubmit} style={{ marginBottom: 20 }}>
-        <input type="file" onChange={(e) => setImage(e.target.files[0])} required />
-        <select value={location} onChange={(e) => setLocation(e.target.value)} style={{ marginLeft: 10 }}>
-          <option value="home">Homepage Banner</option>
-          <option value="product">Product Page Banner</option>
-        </select>
-        <button type="submit" style={{ marginLeft: 10 }}>Upload</button>
-      </form>
+    <div className="p-6">
+      <h2 className="text-xl font-bold mb-4">Manage Banners</h2>
 
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+      <div className="mb-4 flex gap-4 items-center">
+        <select
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+          className="border px-4 py-2 rounded"
+        >
+          <option value="home">Home</option>
+          <option value="product">Product</option>
+        </select>
+
+        <input
+          type="file"
+          onChange={(e) => setImage(e.target.files[0])}
+          className="border p-2 rounded"
+        />
+        <button
+          onClick={handleUpload}
+          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+        >
+          Upload Banner
+        </button>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {banners.map((b) => (
-          <div key={b._id} style={{ border: "1px solid #ddd", padding: 10 }}>
-            <img src={`http://localhost:5000/uploads/${b.image}`} alt="banner" width="200" />
-            <p>{b.location}</p>
-            <button onClick={() => deleteBanner(b._id)}>Delete</button>
+          <div key={b._id} className="relative group">
+            <img
+              src={b.image}
+              alt="Banner"
+              className="rounded-xl w-full h-[150px] object-cover"
+            />
+            <button
+              onClick={() => deleteBanner(b._id)}
+              className="absolute top-2 right-2 bg-red-600 text-white rounded-full px-2 py-1 text-xs group-hover:opacity-100 opacity-0 transition"
+            >
+              X
+            </button>
           </div>
         ))}
       </div>

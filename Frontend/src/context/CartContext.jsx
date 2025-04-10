@@ -6,6 +6,7 @@ export const useCart = () => useContext(CartContext);
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
+  const [loading, setLoading] = useState(true); // ✅ NEW
 
   // 🔄 Load from localStorage on mount
   useEffect(() => {
@@ -13,6 +14,7 @@ export const CartProvider = ({ children }) => {
     if (storedCart) {
       setCartItems(JSON.parse(storedCart));
     }
+    setLoading(false); // ✅ Once cart is loaded
   }, []);
 
   // 🔄 Sync with localStorage whenever cart updates
@@ -20,7 +22,6 @@ export const CartProvider = ({ children }) => {
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
   }, [cartItems]);
 
-  // ➕ Add to cart
   const addToCart = (product) => {
     setCartItems((prevItems) => {
       const existing = prevItems.find((item) => item._id === product._id);
@@ -35,7 +36,6 @@ export const CartProvider = ({ children }) => {
     });
   };
 
-  // ➖ Remove one item (reduce quantity)
   const removeOneFromCart = (productId) => {
     setCartItems((prevItems) => {
       const existing = prevItems.find((item) => item._id === productId);
@@ -51,18 +51,18 @@ export const CartProvider = ({ children }) => {
     });
   };
 
-  // ❌ Remove all items
   const removeFromCart = (productId) => {
     setCartItems((prevItems) =>
       prevItems.filter((item) => item._id !== productId)
     );
   };
 
-  // 🧹 Clear full cart
   const clearCart = () => {
     setCartItems([]);
     localStorage.removeItem("cartItems");
   };
+
+  if (loading) return null; // ✅ Prevent rendering until cart is loaded
 
   return (
     <CartContext.Provider

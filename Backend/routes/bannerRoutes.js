@@ -1,38 +1,39 @@
-const express = require("express");
-const multer = require("multer");
-const Banner = require("../models/Banner");
+import express from 'express';
+import multer from 'multer';
+import path from 'path';
+import Banner from '../models/Banner.js';
 
 const router = express.Router();
 
 const storage = multer.diskStorage({
-  destination: "uploads/",
-  filename: (_, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
+  destination: (req, file, cb) => cb(null, 'uploads/banners'),
+  filename: (req, file, cb) =>
+    cb(null, `${Date.now()}-${file.originalname.replace(/\s+/g, '-')}`),
 });
+
 const upload = multer({ storage });
 
-// ✅ Create banner
-router.post("/", upload.single("image"), async (req, res) => {
+// Create new banner
+router.post('/', upload.single('image'), async (req, res) => {
+  const { location } = req.body;
   const newBanner = new Banner({
-    image: req.file.filename,
-    location: req.body.location,
+    image: `/uploads/banners/${req.file.filename}`,
+    location,
   });
-
   await newBanner.save();
-  res.json(newBanner);
+  res.status(201).json(newBanner);
 });
 
-// ✅ Get all banners
-router.get("/", async (req, res) => {
-  const banners = await Banner.find();
+// Get banners by location
+router.get('/:location', async (req, res) => {
+  const banners = await Banner.find({ location: req.params.location });
   res.json(banners);
 });
 
-// ✅ Delete
-router.delete("/:id", async (req, res) => {
+// Delete banner
+router.delete('/:id', async (req, res) => {
   await Banner.findByIdAndDelete(req.params.id);
-  res.json({ message: "Deleted" });
+  res.json({ message: 'Banner deleted successfully' });
 });
 
-module.exports = router;
+export default router;

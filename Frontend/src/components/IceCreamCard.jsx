@@ -2,13 +2,30 @@ import { useState } from "react";
 import { useCart } from "../context/CartContext";
 
 const IceCreamCard = ({ item }) => {
-  const { addToCart, cartItems } = useCart(); // ✅ extract cartItems too
+  const { addToCart, cartItems } = useCart();
   const [localQty, setLocalQty] = useState(item.quantity);
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     if (localQty > 0) {
-      addToCart(item);
-      setLocalQty((prev) => prev - 1);
+      // Call the API to decrease the quantity
+      try {
+        const response = await fetch(`http://localhost:5000/api/products/${item._id}/decrease`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (response.ok) {
+          // Update local quantity and add to cart
+          addToCart(item);
+          setLocalQty((prev) => prev - 1);
+        } else {
+          console.error("Failed to decrease quantity");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
     }
   };
 

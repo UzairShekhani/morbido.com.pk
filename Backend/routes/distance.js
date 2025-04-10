@@ -19,28 +19,20 @@ router.post("/calculate", async (req, res) => {
       },
     });
 
-    console.log("📦 Google Distance API Response:", JSON.stringify(response.data, null, 2));
+    const result = response.data?.rows?.[0]?.elements?.[0];
 
-    const distanceData = response.data?.rows?.[0]?.elements?.[0];
-    if (!distanceData || !distanceData.distance?.value) {
-      console.error("❌ Distance not found in API response");
-      return res.status(400).json({ error: "Could not fetch distance" });
+    if (!result || result.status !== "OK" || !result.distance) {
+      console.error("❌ Invalid distance response:", result);
+      return res.status(400).json({ error: "Invalid address. Please select from suggestions." });
     }
 
-    const result = response.data.rows[0].elements[0];
-
-if (!result || result.status !== "OK" || !result.distance) {
-  return res.status(400).json({ error: "Address not recognized by Google Maps. Please choose a suggested one." });
-}
-
-const distanceInMeters = result.distance.value;
-res.json({ distance: distanceInMeters });
+    const distanceInMeters = result.distance.value;
     res.json({ distance: distanceInMeters });
+
   } catch (error) {
     console.error("🔥 Error getting distance:", error.message);
     res.status(500).json({ error: "Failed to calculate distance" });
   }
 });
-
 
 module.exports = router;

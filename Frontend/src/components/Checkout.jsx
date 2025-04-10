@@ -1,14 +1,10 @@
-// ✅ Final Updated: Checkout.jsx with Google Places Autocomplete + Distance API
-
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useCart } from "../context/CartContext";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
-import { Autocomplete, LoadScript } from "@react-google-maps/api";
-
-const GOOGLE_MAPS_API_KEY = "AIzaSyDbZjILZ_-8uNlUCyLvq4-ACFMDyKkw-z0"; // Replace with your actual key
+import { Autocomplete } from "@react-google-maps/api";
 
 const Checkout = () => {
   const { cartItems, clearCart } = useCart();
@@ -45,9 +41,7 @@ const Checkout = () => {
       try {
         const { data } = await axios.post(
           "http://localhost:5000/api/distance/calculate",
-          {
-            address: form.address,
-          }
+          { address: form.address }
         );
         const distanceKm = data.distance / 1000;
         setDistanceKm(distanceKm);
@@ -55,7 +49,7 @@ const Checkout = () => {
         setDeliveryFee(fee);
       } catch (err) {
         console.error("Distance error:", err);
-        toast.error("Failed to calculate delivery fee");
+        
         setDeliveryFee(200);
       } finally {
         setCalculatingFee(false);
@@ -120,7 +114,7 @@ const Checkout = () => {
       await axios.post("http://localhost:5000/api/orders", formData);
       Swal.fire("Success!", "Order placed successfully", "success");
       clearCart();
-      
+      navigate("/");
     } catch (err) {
       console.error(err);
       toast.error("Order failed");
@@ -128,179 +122,103 @@ const Checkout = () => {
   };
 
   return (
-    <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY} libraries={["places"]}>
-      <div style={styles.container}>
-        <h2 style={styles.heading}>🧾 Order Summary</h2>
-        {cartItems.length > 0 ? (
-          <div style={styles.summaryBox}>
-            {cartItems.map((item) => (
-              <div key={item._id} style={styles.summaryItem}>
-                <span>{item.name}</span>
-                <span>× {item.quantity}</span>
-                <span>Rs. {item.price * item.quantity}</span>
-              </div>
-            ))}
-            <hr />
-            <div style={styles.summaryItem}>
-              <strong>Subtotal:</strong>
-              <span>Rs. {cartTotal}</span>
+    <>
+    <br /> <br /> <br /> <br />
+    <div style={styles.container}>
+      <h2 style={styles.heading}> Order Summary</h2>
+      {cartItems.length > 0 ? (
+        <div style={styles.summaryBox}>
+          {cartItems.map((item) => (
+            <div key={item._id} style={styles.summaryItem}>
+              <span>{item.name}</span>
+              <span>× {item.quantity}</span>
+              <span>Rs. {item.price * item.quantity}</span>
             </div>
-            <div style={styles.summaryItem}>
-              <strong>Delivery Fee:</strong>
-              <span>
-                Rs. {deliveryFee} {calculatingFee && "(calculating...)"}
-              </span>
-            </div>
-            <div style={styles.summaryItem}>
-              <strong>Total:</strong>
-              <span style={{ color: "#E91E63" }}>Rs. {grandTotal}</span>
-            </div>
+          ))}
+          <hr />
+          <div style={styles.summaryItem}>
+            <strong>Subtotal:</strong>
+            <span>Rs. {cartTotal}</span>
           </div>
-        ) : (
-          <p style={styles.empty}>🛒 Cart is empty</p>
-        )}
+          <div style={styles.summaryItem}>
+            <strong>Delivery Fee:</strong>
+            <span>
+              Rs. {deliveryFee} {calculatingFee && "(calculating...)"}
+            </span>
+          </div>
+          <div style={styles.summaryItem}>
+            <strong>Total:</strong>
+            <span style={{ color: "#E91E63" }}>Rs. {grandTotal}</span>
+          </div>
+        </div>
+      ) : (
+        <p style={styles.empty}>🛒 Cart is empty</p>
+      )}
 
-        <form onSubmit={handleSubmit} style={styles.form}>
+      <form onSubmit={handleSubmit} style={styles.form}>
+        <input
+          type="text"
+          placeholder="Full Name"
+          value={form.name}
+          onChange={(e) => setForm({ ...form, name: e.target.value })}
+          style={styles.input}
+        />
+        <input
+          type="tel"
+          placeholder="Phone Number"
+          value={form.phone}
+          onChange={(e) => setForm({ ...form, phone: e.target.value })}
+          style={styles.input}
+        />
+        <input
+          type="email"
+          placeholder="Email Address"
+          value={form.email}
+          onChange={(e) => setForm({ ...form, email: e.target.value })}
+          style={styles.input}
+        />
+
+        <Autocomplete
+          onPlaceChanged={() => {
+            const place = autocompleteRef.current.getPlace();
+            if (place && place.formatted_address) {
+              setForm((prev) => ({
+                ...prev,
+                address: place.formatted_address,
+              }));
+            } else {
+              toast.error("Please select a valid address from suggestions");
+            }
+          }}
+          onLoad={(ref) => (autocompleteRef.current = ref)}
+          options={{
+            componentRestrictions: { country: "pk" },
+          }}
+        >
           <input
             type="text"
-            placeholder="Full Name"
-            value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            placeholder="Select address from suggestions"
+            value={form.address}
+            onChange={(e) =>
+              setForm((prev) => ({
+                ...prev,
+                address: e.target.value, // ✅ Allow typing
+              }))
+            }
             style={styles.input}
           />
-          <input
-            type="tel"
-            placeholder="Phone Number"
-            value={form.phone}
-            onChange={(e) => setForm({ ...form, phone: e.target.value })}
-            style={styles.input}
-          />
-          <input
-            type="email"
-            placeholder="Email Address"
-            value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
-            style={styles.input}
-          />
+        </Autocomplete>
 
-          <Autocomplete
-            onPlaceChanged={() => {
-              const place = autocompleteRef.current.getPlace();
-              if (place && place.formatted_address) {
-                setForm((prev) => ({
-                  ...prev,
-                  address: place.formatted_address,
-                }));
-              } else {
-                toast.error("Please select an address from the suggestions");
-              }
-            }}
-            onLoad={(ref) => (autocompleteRef.current = ref)}
-            options={{ componentRestrictions: { country: "pk" } }} // 👈 ADD THIS LINE
-          >
-            <input
-              type="text"
-              placeholder="Start typing your address..."
-              value={form.address}
-              onChange={(e) => setForm({ ...form, address: e.target.value })}
-              style={styles.input}
-            />
-          </Autocomplete>
+        <button type="submit" style={styles.button}>
+          Place Order – Rs. {grandTotal}
+        </button>
+      </form>
+    </div>
 
-          <div style={styles.radioGroup}>
-            {["cod", "jazzcash", "bank"].map((method) => (
-              <label key={method} style={styles.radioLabel}>
-                <input
-                  type="radio"
-                  name="payment"
-                  value={method}
-                  checked={paymentMethod === method}
-                  onChange={() => setPaymentMethod(method)}
-                  style={styles.radioInput}
-                />
-                {method === "cod"
-                  ? "Cash on Delivery"
-                  : method === "jazzcash"
-                  ? "JazzCash"
-                  : "Bank Transfer"}
-              </label>
-            ))}
-          </div>
-
-          {paymentMethod === "jazzcash" && (
-            <>
-              <input
-                type="text"
-                placeholder="JazzCash Number"
-                value={jazzcashNumber}
-                onChange={(e) => setJazzcashNumber(e.target.value)}
-                style={styles.input}
-                required
-              />
-              <input
-                type="text"
-                placeholder="CNIC (13 digits)"
-                value={jazzcashCNIC}
-                onChange={(e) => setJazzcashCNIC(e.target.value)}
-                style={styles.input}
-                required
-              />
-              <label style={styles.label}>Upload Receipt:</label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setReceipt(e.target.files[0])}
-                style={styles.input}
-              />
-            </>
-          )}
-
-          {paymentMethod === "bank" && (
-            <>
-              <input
-                type="text"
-                placeholder="Card Number"
-                value={cardNumber}
-                onChange={(e) => setCardNumber(e.target.value)}
-                style={styles.input}
-                required
-              />
-              <div style={{ display: "flex", gap: "10px" }}>
-                <input
-                  type="text"
-                  placeholder="MM/YY"
-                  value={expiry}
-                  onChange={(e) => setExpiry(e.target.value)}
-                  style={{ ...styles.input, flex: 1 }}
-                  required
-                />
-                <input
-                  type="password"
-                  placeholder="CVV"
-                  value={cvv}
-                  onChange={(e) => setCvv(e.target.value)}
-                  style={{ ...styles.input, flex: 1 }}
-                  required
-                />
-              </div>
-              <label style={styles.label}>Upload Receipt:</label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setReceipt(e.target.files[0])}
-                style={styles.input}
-              />
-            </>
-          )}
-
-          <button type="submit" style={styles.button}>
-            Place Order – Rs. {grandTotal}
-          </button>
-        </form>
-      </div>
-    </LoadScript>
+    </>
   );
 };
+
 
 const styles = {
   container: {
@@ -336,6 +254,7 @@ const styles = {
     textAlign: "center",
     fontWeight: "500",
     marginBottom: "20px",
+    color: "#000", // black
   },
   form: {
     display: "flex",
@@ -349,32 +268,6 @@ const styles = {
     border: "1px solid #ccc",
     outline: "none",
     width: "100%",
-  },
-  label: {
-    fontWeight: "500",
-    marginBottom: "6px",
-  },
-  radioGroup: {
-    display: "flex",
-    justifyContent: "space-between",
-    gap: "10px",
-    flexWrap: "wrap",
-    marginTop: "10px",
-  },
-  radioLabel: {
-    flex: "1",
-    padding: "10px 12px",
-    background: "#f0f0f0",
-    borderRadius: "8px",
-    fontWeight: "500",
-    cursor: "pointer",
-    display: "flex",
-    alignItems: "center",
-    gap: "8px",
-  },
-  radioInput: {
-    accentColor: "#E91E63",
-    cursor: "pointer",
   },
   button: {
     padding: "14px",

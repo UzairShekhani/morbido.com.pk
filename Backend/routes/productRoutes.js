@@ -55,6 +55,7 @@ router.delete("/:id", async (req, res) => {
 // ✅ Update Product
 // Increase quantity
 // PUT /api/products/:id/decrease
+// PUT /api/products/:id/decrease
 router.put("/:id/decrease", async (req, res) => {
   try {
     const product = await Product.findByIdAndUpdate(

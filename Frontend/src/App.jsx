@@ -10,7 +10,6 @@ import Checkout from "./components/Checkout";
 import AllProducts from "./components/AllProducts";
 import FlavorsPage from "./components/FlavorsPage";
 import HomeBanner from "./components/HomeBanner";
-
 import { Toaster } from "react-hot-toast";
 
 function App() {
@@ -19,28 +18,42 @@ function App() {
   return (
     <Router>
       <Toaster position="top-center" toastOptions={{ duration: 2500 }} />
+      
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/admin/*" element={token ? <AdminPanel /> : <Navigate to="/login" replace />} />
-        <Route path="*" element={<><Navbar /><Sidebar /><MainRoutes /></>} />
+        
+        {/* Wrap your main UI layout with navbar/sidebar in a single route */}
+        <Route
+          path="/*"
+          element={
+            <>
+              <Navbar />
+              <Sidebar />
+              <MainRoutes />
+            </>
+          }
+        />
       </Routes>
     </Router>
   );
 }
 
-const MainRoutes = () => (
-  <Routes>
-    <Route path="/" element={<><HomeBanner /><SliderMain /></>} />
-    <Route path="/checkout" element={<Checkout />} />
-    <Route path="/flavors" element={<FlavorsPage />} />
-    <Route path="/fudge-bar" element={<CircleSlider title="Fudge Bar" />} />
-    <Route path="/chocolate-delight" element={<CircleSlider title="Chocolate Delight" />} />
-    <Route path="/cookie-details" element={<CircleSlider title="Cookie Details" />} />
-    <Route path="/popsicle" element={<CircleSlider title="Popsicles" />} />
-    <Route path="/premium" element={<CircleSlider title="Premiums" />} />
-    <Route path="/icecreamproducts" element={<ProductPage />} />
-    <Route path="/all-products" element={<AllProducts />} />
-  </Routes>
-);
+const MainRoutes = () => {
+  return (
+    <Routes>
+      <Route path="/" element={<><HomeBanner /><SliderMain /></>} />
+      <Route path="/checkout" element={<Checkout />} />
+      <Route path="/flavors" element={<FlavorsPage />} />
+      <Route path="/fudge-bar" element={<CircleSlider title="Fudge Bar" />} />
+      <Route path="/chocolate-delight" element={<CircleSlider title="Chocolate Delight" />} />
+      <Route path="/cookie-details" element={<CircleSlider title="Cookie Details" />} />
+      <Route path="/popsicle" element={<CircleSlider title="Popsicles" />} />
+      <Route path="/premium" element={<CircleSlider title="Premiums" />} />
+      <Route path="/icecreamproducts" element={<ProductPage />} />
+      <Route path="/all-products" element={<AllProducts />} />
+    </Routes>
+  );
+};
 
 export default App;
