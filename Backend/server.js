@@ -4,26 +4,28 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const path = require("path");
 
-const app = express();
-app.use(cors());
-app.use(express.json());
-app.use("/uploads", express.static("uploads")); // ✅ To serve uploaded receipts/images
-
-// Routes
 const bannerRoutes = require("./routes/bannerRoutes");
 const flavorRoutes = require("./routes/flavorRoutes");
 const sliderRoutes = require("./routes/sliderRoutes");
 const authRoutes = require("./routes/authRoutes");
 const productRoutes = require("./routes/productRoutes");
 const orderRoutes = require("./routes/orderRoutes");
-const distanceRouter = require("./distance"); // Import the distance router
+const distanceRouter = require("./routes/distance");
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+app.use("/uploads", express.static("uploads")); // serve uploaded images
+
+// Routes
 
 app.use("/api/banners", bannerRoutes);
 app.use("/api/flavors", flavorRoutes);
 app.use("/api/sliders", sliderRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
-app.use("/api/orders", orderRoutes); // ✅ Orders Route
+app.use("/api/orders", orderRoutes);
 app.use("/api/distance", distanceRouter);
 
 mongoose.connect(process.env.MONGO_URI, {

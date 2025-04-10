@@ -9,10 +9,11 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Place Order
+// ✅ Place Order
 router.post("/", upload.single("receipt"), async (req, res) => {
   try {
     const { customer, items, paymentMethod, deliveryFee } = req.body;
+
     const newOrder = new Order({
       customer: JSON.parse(customer),
       items: JSON.parse(items),
@@ -20,6 +21,7 @@ router.post("/", upload.single("receipt"), async (req, res) => {
       deliveryFee,
       receiptImage: req.file ? req.file.filename : null
     });
+
     await newOrder.save();
     res.status(201).json({ message: "Order placed", order: newOrder });
   } catch (err) {
@@ -27,7 +29,7 @@ router.post("/", upload.single("receipt"), async (req, res) => {
   }
 });
 
-// Get All Orders
+// ✅ Get All Orders
 router.get("/", async (req, res) => {
   try {
     const orders = await Order.find().sort({ createdAt: -1 });
@@ -37,7 +39,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Mark Order Completed
+// ✅ Update Order Status
 router.put("/:id/status", async (req, res) => {
   try {
     const updated = await Order.findByIdAndUpdate(

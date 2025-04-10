@@ -4,16 +4,12 @@ const orderSchema = new mongoose.Schema({
   customer: {
     name: String,
     phone: String,
-    address: String
+    address: String,
+    email: String,
+    area: String,
+    distance: Number
   },
-  items: [
-    {
-      name: String,
-      price: Number,
-      quantity: Number,
-      image: String
-    }
-  ],
+  items: Array,
   paymentMethod: String,
   deliveryFee: Number,
   receiptImage: String,

@@ -1,68 +1,67 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import axios from "axios";
-import toast from "react-hot-toast"; // ✅ Toast added
 
 const CartContext = createContext();
 
-export const CartProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useState(() => {
-    const stored = localStorage.getItem("cartItems");
-    return stored ? JSON.parse(stored) : [];
-  });
+export const useCart = () => useContext(CartContext);
 
+export const CartProvider = ({ children }) => {
+  const [cartItems, setCartItems] = useState([]);
+
+  // 🔄 Load from localStorage on mount
+  useEffect(() => {
+    const storedCart = localStorage.getItem("cartItems");
+    if (storedCart) {
+      setCartItems(JSON.parse(storedCart));
+    }
+  }, []);
+
+  // 🔄 Sync with localStorage whenever cart updates
   useEffect(() => {
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
   }, [cartItems]);
 
-  // ✅ Add to Cart (Decrease from DB)
-  // ✅ Add to Cart (Decrease from DB)
-const addToCart = async (item) => {
-  const exists = cartItems.find((p) => p._id === item._id);
-
-  if (exists) {
-    setCartItems((prev) =>
-      prev.map((p) =>
-        p._id === item._id ? { ...p, quantity: p.quantity + 1 } : p
-      )
-    );
-  } else {
-    setCartItems((prev) => [...prev, { ...item, quantity: 1 }]);
-  }
-
-    await axios.put(`http://localhost:5000/api/products/${item._id}/decrease`);
-  };
-
-  // ✅ Remove ONE from cart and increase DB quantity
-  const removeOneFromCart = async (productId) => {
-    const found = cartItems.find((item) => item._id === productId);
-    if (!found) return;
-
-    try {
-      await axios.put(`http://localhost:5000/api/products/${productId}/increase`, {
-        quantity: 1,
-      });
-
-      if (found.quantity === 1) {
-        setCartItems((prev) => prev.filter((item) => item._id !== productId));
-      } else {
-        setCartItems((prev) =>
-          prev.map((item) =>
-            item._id === productId
-              ? { ...item, quantity: item.quantity - 1 }
-              : item
-          )
+  // ➕ Add to cart
+  const addToCart = (product) => {
+    setCartItems((prevItems) => {
+      const existing = prevItems.find((item) => item._id === product._id);
+      if (existing) {
+        return prevItems.map((item) =>
+          item._id === product._id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
         );
       }
-
-      toast.success(" Removed 1 item");
-    } catch (err) {
-      toast.error("Error increasing stock");
-    }
+      return [...prevItems, { ...product, quantity: 1 }];
+    });
   };
 
+  // ➖ Remove one item (reduce quantity)
+  const removeOneFromCart = (productId) => {
+    setCartItems((prevItems) => {
+      const existing = prevItems.find((item) => item._id === productId);
+      if (!existing) return prevItems;
+      if (existing.quantity === 1) {
+        return prevItems.filter((item) => item._id !== productId);
+      }
+      return prevItems.map((item) =>
+        item._id === productId
+          ? { ...item, quantity: item.quantity - 1 }
+          : item
+      );
+    });
+  };
+
+  // ❌ Remove all items
+  const removeFromCart = (productId) => {
+    setCartItems((prevItems) =>
+      prevItems.filter((item) => item._id !== productId)
+    );
+  };
+
+  // 🧹 Clear full cart
   const clearCart = () => {
     setCartItems([]);
-    toast(" Cart cleared");
+    localStorage.removeItem("cartItems");
   };
 
   return (
@@ -71,6 +70,7 @@ const addToCart = async (item) => {
         cartItems,
         addToCart,
         removeOneFromCart,
+        removeFromCart,
         clearCart,
       }}
     >
@@ -78,5 +78,3 @@ const addToCart = async (item) => {
     </CartContext.Provider>
   );
 };
-
-export const useCart = () => useContext(CartContext);
